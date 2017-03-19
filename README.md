@@ -57,3 +57,12 @@ Contributors
 
 * Mark Galloway
 * Abram Hindle
+* AaronHongyang Liu
+
+image srouce:
+
+http://www.pngmart.com/files/2/Pikachu-Transparent-Background.png
+
+http://www.pngmart.com/files/2/Angry-Pikachu-PNG-Clipart.png
+
+http://www.pngmart.com/files/2/Pikachu-PNG-HD.png
