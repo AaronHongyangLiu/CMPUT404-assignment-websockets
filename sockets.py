@@ -75,6 +75,10 @@ clients = list()
 
 def set_listener( entity, data ):
     ''' do something with the update ! '''
+    msg = dict()
+    msg[entity] = data
+    for client in clients:
+        client.put(json.dumps(msg))
 
 myWorld.add_set_listener( set_listener )
         
@@ -85,8 +89,18 @@ def hello():
 
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
-    # XXX: TODO IMPLEMENT ME
-    return None
+    try:
+        while True:
+            msg = ws.receive()
+            print "WS RECV: %s" % msg
+            if (msg is not None):
+                entities = json.loads(msg)
+                for entity in entities:
+                    myWorld.set(entity,entities[entity])
+            else:
+                break
+    except:
+        '''Done'''
 
 @sockets.route('/subscribe')
 def subscribe_socket(ws):
@@ -95,7 +109,9 @@ def subscribe_socket(ws):
     client = Client()
     clients.append(client)
     g = gevent.spawn(read_ws, ws, client)
-    print "Subscribing"
+    print "got one client %d" % len(clients)
+    # initialize client's world
+    client.put(json.dumps(myWorld.world()))
     try:
         while True:
             # block here
@@ -105,6 +121,7 @@ def subscribe_socket(ws):
     except Exception as e:  # WebSocketError as e:
         print "WS Error %s" % e
     finally:
+        print "client %d left" % len(clients)
         clients.remove(client)
         gevent.kill(g)
     return None
